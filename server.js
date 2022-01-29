@@ -4,11 +4,11 @@ const cors = require("cors");
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:8087"
+  origin: "http://localhost:8087",
 };
 
-require('./routes/Auth.routes')(app);
-require('./routes/User.routes')(app);
+require("./routes/auth.routes")(app);
+require("./routes/user.routes")(app);
 
 app.use(cors(corsOptions));
 
@@ -23,12 +23,6 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to connectini application." });
 });
 
-// set port, listen for requests
-const PORT = process.env.PORT || 8086;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
-
 //open Mongoose connection to MongoDB db
 
 const db = require("./models");
@@ -37,23 +31,29 @@ const dbConfig = require("./config/db.config.js");
 db.mongoose
   .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("Successfully connect to MongoDB.");
     initial();
   })
-  .catch(err => {
+  .catch((err) => {
     console.error("Connection error", err);
     process.exit();
   });
+
+// set port, listen for requests
+const PORT = process.env.PORT || 8086;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});
 
 function initial() {
   Role.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
       new Role({
-        name: "user"
-      }).save(err => {
+        name: "user",
+      }).save((err) => {
         if (err) {
           console.log("error", err);
         }
@@ -62,8 +62,8 @@ function initial() {
       });
 
       new Role({
-        name: "moderator"
-      }).save(err => {
+        name: "moderator",
+      }).save((err) => {
         if (err) {
           console.log("error", err);
         }
@@ -72,8 +72,8 @@ function initial() {
       });
 
       new Role({
-        name: "admin"
-      }).save(err => {
+        name: "admin",
+      }).save((err) => {
         if (err) {
           console.log("error", err);
         }
